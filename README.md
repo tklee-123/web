@@ -18,6 +18,7 @@ Sau khi clone code về máy, chạy npm install bla bla
     }
 
 }
+
 3. Tin tuyển dụng: 
 - Mô tả: thêm tin tuyển dụng, id của news sẽ cho tăng dần, ví dụ trong collection đang là id news18 rồi thì tin tiếp theo được thêm vào sẽ có id là news19
 - POST : http://localhost:8000/add_news
