@@ -84,7 +84,7 @@ with open("output_match.txt", "w", encoding="utf-8") as output_file:
 for x in match_std:
     print(x,match_std[x])
 
-matching_results = db['matching_results']
+results = db['internship_results']
 for i in match_std.keys():
     position_id = i
     position_data = positions_collection.find_one({"_id": position_id},{"name": 1,"business": 1})
@@ -105,4 +105,4 @@ for i in match_std.keys():
             "position": position_name,
             "business": business_name
         }
-        matching_results.insert_one(result)
+        results.insert_one(result)
