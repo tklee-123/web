@@ -95,11 +95,12 @@ for i in match_std.keys():
     
     list_student = match_std[i]
     for j in list_student:
-        student_data = students_collection.find_one({"_id": j}, {"name": 1,"birthday":1, "sex": 1, "major": 1})
+        student_data = students_collection.find_one({"_id": j}, {"name": 1,"birthday":1, "sex": 1, "major": 1, "phone": 1})
         result = {
             "_id": student_data["_id"],
             "name": student_data["name"],
             "birthday": student_data['birthday'],
+            "phone": student_data['phone'],
             "sex": student_data['sex'],
             "major": student_data['major'],
             "position": position_name,

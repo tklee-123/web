@@ -1,7 +1,10 @@
 // controllers/userController.js
 const Profile = require('../models/Student');
 const Accounts = require('../models/Account');
-const User = require('../models/Account');
+const FinalReports = require('../models/FinalReport');
+const InternshipResult = require('../models/InternshipResult');
+const RegularReport = require('../models/WeeklyReport');
+const { exec } = require('child_process');
 const userController = {
     getProfile: async (req, res) => {
         try {
@@ -72,26 +75,28 @@ const userController = {
 
     getAllProfiles: async (req, res) => {
         try {
-            const users = await User.find({ role: 'student' }).populate('profile');
-            const profiles = users.map((user) => ({
-                userId: user._id,
-                username: user.username,
-                profile: user.profile ? user.profile : {},
+            const accounts = await Accounts.find({ role: 'student' }).populate('_id');
+    
+            const profiles = accounts.map(account => ({
+                    _id: account._id._id,
+                    name: account._id.name,
+                    major: account._id.major,
+                
             }));
-
+    
             return res.status(200).json(profiles);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-
+    
     createProfile: async (req, res) => {
         try {
             const userId = req.params.id;
             const requestingUserId = req.user.id;
 
-            const user = await User.findById(userId).populate('profile');
+            const user = await Accounts.findById(userId).populate('profile');
             if (!user) {
                 return res.status(404).json('User not found');
             }
@@ -120,6 +125,67 @@ const userController = {
             res.status(500).json({ error: 'Internal Server Error', chiTiet: err.message });
         }
     },
+    getRegularReport : async (req, res) => {
+        try {
+            const regularReports = await FinalReports.find({}).populate({
+                path: '_id',
+                model: 'Internship_Result'
+            });
+    
+            const profiles = regularReports.map(report => ({
+                _id: report._id._id,
+                name: report._id.name,
+                phone: report._id.phone,
+                major: report._id.major,
+                position: report._id.position,
+                business: report._id.business,
+                project: report.project
+            }));
+    
+            return res.status(200).json(profiles);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },    
+    getRegularReport_details: async (req, res) => {
+        try {
+            const regularReports = await RegularReport.find({});
+            const results = [];
+    
+            regularReports.forEach(regularReport => {
+                regularReport.reports.forEach(report => {
+                    results.push({
+                        time: report.time,
+                        work: report.work,
+                        progress: report.progress,
+                    });
+                });
+            });
+    
+            return res.status(200).json(results);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },   
+
+    runcode: async (req, res) => {
+        exec('python D:\\web\\backend\\algorithms\\demo.py', (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing the Python script: ${error}`);
+            return res.status(500).send('Internal Server Error');
+          }
+      
+          try {
+            const jsonData = JSON.parse(stdout);
+            res.json(jsonData);
+          } catch (parseError) {
+            console.error(`Error parsing JSON: ${parseError}`);
+            res.send(stdout.replace(/\n/g, '<br>'));
+          }
+        });
+    }
 };
 
 module.exports = userController;

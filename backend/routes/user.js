@@ -18,5 +18,10 @@ router.post("/teacher/student-mana/:id", middlewareController.verifyTokenAndAdmi
 
 // Xoá hồ sơ người dùng (Chỉ Admin có quyền)
 router.delete("/teacher/teacher-mana/:id", middlewareController.verifyTokenAndAdmin, userController.deleteProfile);
-
+//lấy thông tin báo cáo thường xuyên
+router.get("/teacher/mana-intern/regular-report", middlewareController.verifyTokenAndAdmin,userController.getRegularReport)
+//lấy thông tin báo cáo thường xuyên - chi tiết
+router.get("/teacher/mana-intern/regular-report/details", middlewareController.verifyTokenAndAdmin,userController.getRegularReport_details)
+//chạy thuật toán matching
+router.post("/runalgorithms", middlewareController.verifyTokenAndAdmin,userController.runcode);
 module.exports = router;
